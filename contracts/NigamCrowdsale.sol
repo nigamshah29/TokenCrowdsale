@@ -4,7 +4,7 @@ import './zeppelin/ownership/Ownable.sol';
 import './oraclize/oraclizeAPI.sol';
 import './NigamCoin.sol';
 
-contract NigamCrowdsale is Ownable, usingOraclize {
+contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
     using SafeMath for uint256;
 
     NigamCoin public token;     //token we sale

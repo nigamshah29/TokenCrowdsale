@@ -2,10 +2,11 @@ pragma solidity ^0.4.15;
 
 
 import './zeppelin/token/MintableToken.sol';
+import './zeppelin/ownership/HasNoEther.sol';
 import './zeppelin/ownership/HasNoContracts.sol';
 import './zeppelin/ownership/HasNoTokens.sol';
 
-contract NigamCoin is MintableToken, HasNoContracts, HasNoTokens { //MintableToken is StandardToken, Ownable
+contract NigamCoin is MintableToken, HasNoContracts, HasNoTokens, HasNoEther { //MintableToken is StandardToken, Ownable
     string public symbol = 'NGM';
     string public name = 'NigamCoin';
     uint8 public constant decimals = 18;
@@ -26,3 +27,4 @@ contract NigamCoin is MintableToken, HasNoContracts, HasNoTokens { //MintableTok
         super.transferFrom(_from, _to, _value);
     }
 }
+
