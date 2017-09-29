@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 import './zeppelin/ownership/Ownable.sol';
-import './oraclize/oraclizeAPI.sol';
+import './oraclizeAPI_mod.sol';
 import './NigamCoin.sol';
 
 contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
@@ -11,14 +11,14 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
     uint256 public ethPrice;    //ETHUSD price in $0.00001, will be set by Oraclize, example: if 1 ETH = 295.14000 USD, then ethPrice = 29514000
 
     uint256   public preSale1BasePrice;       //price in cents
-    uint8[]   public preSale1BonusSchedule;   //bonus percents
-    uint256[] public preSale1BonusLimits;     //limits to apply bonuses
+    uint8[5]   public preSale1BonusSchedule;   //bonus percents
+    uint256[5] public preSale1BonusLimits;     //limits to apply bonuses
     uint256   public preSale1EthHardCap;      //hard cap for 1 pre-sale in ether  
     uint256   public preSale1EthCollected;    //how much ether already collected at pre-sale 1
 
     uint256   public preSale2BasePrice;       //price in cents
-    uint8[]   public preSale2BonusSchedule;   //bonus percents
-    uint256[] public preSale2BonusLimits;     //limits to apply bonuses
+    uint8[5]   public preSale2BonusSchedule;   //bonus percents
+    uint256[5] public preSale2BonusLimits;     //limits to apply bonuses
     uint256   public preSale2EthHardCap;      //hard cap for 2 pre-sale in ether  
     uint256   public preSale2EthCollected;    //how much ether already collected at pre-sale 2
 
@@ -54,31 +54,43 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
     event TokenPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
 
-    function NigamCrowdsale(NigamCoin _token){
+    function NigamCrowdsale(NigamCoin _token, 
+        uint256 _preSale1BasePrice, uint8[] _preSale1BonusSchedule, uint256[] _preSale1BonusLimits, uint256 _preSale1EthHardCap,
+        uint256 _preSale2BasePrice, uint8[] _preSale2BonusSchedule, uint256[] _preSale2BonusLimits, uint256 _preSale2EthHardCap,
+        uint256 _saleBasePrice, uint32 _salePriceIncreaseInteval, uint32 _salePriceIncreaseAmount, uint256 _saleEthHardCap,
+        uint256 _ownersPercent
+        ){
         state = State.Paused;
 
-        preSale1BasePrice = 50000;
-        preSale1BonusSchedule = [5, 10, 15, 25, 50];
-        preSale1BonusLimits   = [4 ether, 10 ether, 15 ether, 25 ether, 100 ether];
-        saleEthHardCap = 1666.67 ether;
+        uint8 i;
+
+        assert(_preSale1BonusSchedule.length == 5 && _preSale1BonusSchedule.length == _preSale1BonusLimits.length);
+        preSale1BasePrice = _preSale1BasePrice;             //50000
+        //preSale1BonusSchedule = _preSale1BonusSchedule;     //[5, 10, 15, 25, 50];    
+        for(i=0; i< _preSale1BonusSchedule.length; i++) preSale1BonusSchedule[i] = _preSale1BonusSchedule[i];
+        //preSale1BonusLimits   = _preSale1BonusLimits;       //[4 ether, 10 ether, 15 ether, 25 ether, 100 ether];
+        for(i=0; i< _preSale1BonusLimits.length; i++) preSale1BonusLimits[i] = _preSale1BonusLimits[i];
+        preSale1EthHardCap = _preSale1EthHardCap;           //1666.67 ether;
         assert(preSale1BonusSchedule.length == preSale1BonusLimits.length);
 
-        preSale2BasePrice = 70000;
-        preSale2BonusSchedule = [1, 3, 5, 8, 25];
-        preSale2BonusLimits   = [500 ether, 1000 ether, 2500 ether, 5000 ether, 1000 ether];
-        saleEthHardCap = 16666.67 ether;
-        assert(preSale2BonusSchedule.length == preSale2BonusLimits.length);
+        assert(preSale2BonusSchedule.length == 5 && _preSale2BonusSchedule.length == _preSale2BonusLimits.length);
+        preSale2BasePrice = _preSale2BasePrice;             //75000;
+        //preSale2BonusSchedule = _preSale2BonusSchedule;     //[1, 3, 5, 8, 25]
+        for(i=0; i< _preSale2BonusSchedule.length; i++) preSale2BonusSchedule[i] = _preSale2BonusSchedule[i];
+        //preSale2BonusLimits = _preSale2BonusLimits;         //[500 ether, 1000 ether, 2500 ether, 5000 ether, 1000 ether];
+        for(i=0; i< _preSale2BonusLimits.length; i++) preSale2BonusLimits[i] = _preSale2BonusLimits[i];
+        preSale2EthHardCap = _preSale2EthHardCap;                   //16666.67 ether;
 
-        saleBasePrice = 100000;
-        salePriceIncreaseInteval = 24*60*60; //1 day
-        salePriceIncreaseAmount = 20000;
-        saleEthHardCap = 166666.67 ether;
+        saleBasePrice = _saleBasePrice;                         //100000;
+        salePriceIncreaseInteval = _salePriceIncreaseInteval;   //24*60*60; //1 day
+        salePriceIncreaseAmount = _salePriceIncreaseAmount;     //20000;
+        saleEthHardCap = _saleEthHardCap;                       //166666.67 ether;
 
-        ownersPercent = 10;
+        ownersPercent = _ownersPercent;
 
         //token = new NigamCoin();
         token = _token;
-        assert(token.delegatecall( bytes4(keccak256("transferOwnership(address)")), this));
+        //assert(token.delegatecall( bytes4(keccak256("transferOwnership(address)")), this));
     }
 
     /**
@@ -122,7 +134,7 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
         }
         return rate;
     }
-    function calculatePreSaleRate(uint256 etherAmount, uint256 basePrice, uint8[] bonusSchedule, uint256[] bonusLimits) constant returns(uint256) {
+    function calculatePreSaleRate(uint256 etherAmount, uint256 basePrice, uint8[5] bonusSchedule, uint256[5] bonusLimits) constant returns(uint256) {
         uint256 rate = ethPrice.div(basePrice);
         for(uint i = preSale1BonusSchedule.length - 1; i >=0; i--){
             if(etherAmount >= preSale1BonusLimits[i]){
@@ -143,11 +155,11 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
     }
     function hardCapReached(State _state) constant returns(bool){
         if(_state == State.FirstPreSale) {
-            return preSale1EthCollected < preSale1EthHardCap;
+            return preSale1EthCollected >= preSale1EthHardCap;
         }else if(_state == State.SecondPreSale) {
-            return preSale2EthCollected < preSale2EthHardCap;
+            return preSale2EthCollected >= preSale2EthHardCap;
         }else if(_state == State.Sale){
-            return saleEthCollected < saleEthHardCap;
+            return saleEthCollected >= saleEthHardCap;
         }else {
             return false;
         }

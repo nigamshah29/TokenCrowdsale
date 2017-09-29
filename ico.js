@@ -55,13 +55,38 @@ jQuery(document).ready(function($) {
 
         let tokenAddress = $('input[name=tokenAddress]', form).val();
 
+        let _preSale1BasePrice = 50000;
+        let _preSale1BonusSchedule = [5, 10, 15, 25, 50];
+        let _preSale1BonusLimits = [4000000000000000000, 10000000000000000000, 15000000000000000000, 25000000000000000000, 100000000000000000000];
+        let _preSale1EthHardCap = web3.toWei(1666.67, 'ether');
+        
+        let _preSale2BasePrice = 75000;
+        let _preSale2BonusSchedule = [1, 3, 5, 8, 25];
+        let _preSale2BonusLimits = [500000000000000000000, 1000000000000000000000, 2500000000000000000000, 5000000000000000000000, 1000000000000000000000];
+        let _preSale2EthHardCap = web3.toWei(16666.67, 'ether');
+
+        let _saleBasePrice = 100000;
+        let _salePriceIncreaseInteval = 24*60*60;
+        let _salePriceIncreaseAmount = 20000;
+        let _saleEthHardCap = web3.toWei(166666.67, 'ether');
+        let _ownersPercent = 10;
+
+
         let contractDef = crowdsaleContract;
         let contractObj = web3.eth.contract(contractDef.abi);
         console.log('Creating contract '+contractDef.contract_name, ' with arguments:\n',
             tokenAddress,
+            _preSale1BasePrice, _preSale1BonusSchedule, _preSale1BonusLimits, _preSale1EthHardCap,
+            _preSale2BasePrice, _preSale2BonusSchedule, _preSale2BonusLimits, _preSale2EthHardCap,
+            _saleBasePrice, _salePriceIncreaseInteval, _salePriceIncreaseAmount, _saleEthHardCap,
+            _ownersPercent,
             '\nABI', JSON.stringify(contractDef.abi));
         let contractInstance = contractObj.new(
             tokenAddress,
+            _preSale1BasePrice, _preSale1BonusSchedule, _preSale1BonusLimits, _preSale1EthHardCap,
+            _preSale2BasePrice, _preSale2BonusSchedule, _preSale2BonusLimits, _preSale2EthHardCap,
+            _saleBasePrice, _salePriceIncreaseInteval, _salePriceIncreaseAmount, _saleEthHardCap,
+            _ownersPercent,
             {
                 from: web3.eth.accounts[0], 
                 data: contractDef.unlinked_binary,
