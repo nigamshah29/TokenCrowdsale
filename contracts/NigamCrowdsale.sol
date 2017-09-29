@@ -71,7 +71,7 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
 
         saleBasePrice = 100000;
         salePriceIncreaseInteval = 24*60*60; //1 day
-        salePriceIncreaseAmount = 20;
+        salePriceIncreaseAmount = 20000;
         saleEthHardCap = 166666.67 ether;
 
         ownersPercent = 10;

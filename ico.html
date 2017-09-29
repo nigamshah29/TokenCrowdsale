@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ICO Admin</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="web3.min.js"></script>
+    <script type="text/javascript" src="ico.js"></script>
+    <link rel="stylesheet" href="style.css" type='text/css'/>
+</head>
+<body>
+<h1>ICO Admin</h1>
+<div class="error" id="errormsg"></div>
+<h2>0. Load contracts</h2>
+<form id="loadContractsForm">
+    <label for="tokenABI">WorldCoin Token ABI:
+        <textarea id="tokenABI" readonly class="abi"></textarea>
+    </label>
+    <label for="crowdsaleABI">WorldCoin Crowdsale ABI:
+        <textarea id="crowdsaleABI" readonly  class="abi"></textarea>
+    </label>
+    <input type="button" id="loadContractsBtn" value="Load contracts">
+</form>
+
+
+<h2>1. Publish Contracts</h2>
+<form id="publishContractForm">
+    <div><input type="button" id="publishContract" value="Publish"></div>
+    <div><label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label></div>
+    <div><label>Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label></div>
+    <div><label>Token Published at: <input type="text" name="publishedTokenAddress" value="" class="ethAddress"></label></div>
+</form>
+
+
+</body>
+</html>
+
