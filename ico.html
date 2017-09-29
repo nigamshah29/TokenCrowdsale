@@ -23,12 +23,18 @@
 </form>
 
 
-<h2>1. Publish Contracts</h2>
-<form id="publishContractForm">
-    <div><input type="button" id="publishContract" value="Publish"></div>
+<h2>1.1 Publish Token</h2>
+<form id="publishTokenForm">
+    <div><input type="button" id="publishToken" value="Publish"></div>
     <div><label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label></div>
-    <div><label>Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label></div>
-    <div><label>Token Published at: <input type="text" name="publishedTokenAddress" value="" class="ethAddress"></label></div>
+    <div><label>Crowdsale Published at: <input type="text" name="publishedAddress" value="" class="ethAddress"></label></div>
+</form>
+<h2>1.2 Publish Crowdsale</h2>
+<form id="publishCrowdsaleForm">
+    <label>Token at: <input type="text" name="tokenAddress" value="" class="ethAddress"></label>
+    <div><input type="button" id="publishCrowdsale" value="Publish"></div>
+    <div><label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label></div>
+    <div><label>Crowdsale Published at: <input type="text" name="publishedAddress" value="" class="ethAddress"></label></div>
 </form>
 
 

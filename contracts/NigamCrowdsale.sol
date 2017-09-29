@@ -54,7 +54,7 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
     event TokenPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
 
-    function NigamCrowdsale(){
+    function NigamCrowdsale(NigamCoin _token){
         state = State.Paused;
 
         preSale1BasePrice = 50000;
@@ -76,7 +76,9 @@ contract NigamCrowdsale is Ownable, HasNoTokens, usingOraclize {
 
         ownersPercent = 10;
 
-        token = new NigamCoin();
+        //token = new NigamCoin();
+        token = _token;
+        assert(token.delegatecall( bytes4(keccak256("transferOwnership(address)")), this));
     }
 
     /**

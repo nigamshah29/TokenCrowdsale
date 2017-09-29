@@ -24,11 +24,12 @@ jQuery(document).ready(function($) {
         });
     }
 
-    //Step 1
-    $('#publishContract').click(function(){
+    //Step 1.1
+    $('#publishToken').click(function(){
         if(crowdsaleContract == null) return;
+        let form = $('#publishTokenForm');
 
-        let contractDef = crowdsaleContract;
+        let contractDef = tokenContract;
         let contractObj = web3.eth.contract(contractDef.abi);
         console.log('Creating contract '+contractDef.contract_name, 'ABI', JSON.stringify(contractDef.abi));
         let contractInstance = contractObj.new(
@@ -38,10 +39,39 @@ jQuery(document).ready(function($) {
             },
             function(error, contract){
                 waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishFactory'),
-                    $('input[name=publishedCrowdsaleAddress]','#publishFactory'),
+                    $('input[name=publishedTx]',form),
+                    $('input[name=publishedAddress]',form),
                     function(contract){
-                        
+                        $('input[name=publishedAddress]','#publishCrowdsaleForm').val(contract.address);
+                    }
+                );
+            }
+        );
+    });
+    //Step 1.2
+    $('#publishCrowdsale').click(function(){
+        if(crowdsaleContract == null) return;
+        let form = $('#publishCrowdsaleForm');
+
+        let tokenAddress = $('input[name=tokenAddress]', form).val();
+
+        let contractDef = crowdsaleContract;
+        let contractObj = web3.eth.contract(contractDef.abi);
+        console.log('Creating contract '+contractDef.contract_name, ' with arguments:\n',
+            tokenAddress,
+            '\nABI', JSON.stringify(contractDef.abi));
+        let contractInstance = contractObj.new(
+            tokenAddress,
+            {
+                from: web3.eth.accounts[0], 
+                data: contractDef.unlinked_binary,
+            },
+            function(error, contract){
+                waitForContractCreation(error, contract, 
+                    $('input[name=publishedTx]',form),
+                    $('input[name=publishedAddress]',form),
+                    function(contract){
+                        //do nothing
                     }
                 );
             }
